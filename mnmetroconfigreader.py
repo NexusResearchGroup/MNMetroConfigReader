@@ -7,6 +7,7 @@ Corridor = namedtuple('Corridor',
                       ["route",
                        "dir"]
                       )
+
 R_Node = namedtuple('R_Node',
                     ["name",
                      "n_type",
@@ -17,7 +18,12 @@ R_Node = namedtuple('R_Node',
                      "shift",
                      "station_id",
                      "speed_limit",
-                     "attach_side"]
+                     "attach_side",
+                     "transition",
+                     "above",
+                     "pickable",
+                     "active",
+                     "forks"]
                     )
 
 class MNMetroConfigReader:
@@ -33,12 +39,42 @@ class MNMetroConfigReader:
     def list_corridors(self):
         '''
         Returns a list of Corridors in the metro_config file
+
+        Each element in the list is a namedtuple of type "Corridor" with the properties:
+
+            route   = the route idenfier, e.g. "I-35W"
+            dir     = the directrion identifier, e.g. "SB"
+
+        A route and dir pair uniquely idenfies a corridor in the metro_config.xml file.
         '''
         return list(Corridor(route=corridor.get('route'), dir=corridor.get('dir')) for corridor in self.root.findall('corridor'))
 
     def list_rnodes_in_corridor(self, corridor):
         '''
         Returns a list containing an R_Node for each r_node in the specified Corridor
+
+        Each element in the list is a namedtuple of type "R_Node" with the properties:
+
+            name        = the name of the r_node, e.g. "rnd_95039"
+            n_type      = the type of node, e.g. 'Entrance', 'Station', etc
+            label
+            lat         = the latitude of the r_node's location in decimal degrees
+            lon         = the longitude of the r_node's location in decimal degrees
+            lanes
+            shift
+            station_id  = for an n_node of type "Station", the station id; for other
+                            types, None
+            speed_limit
+            attach_side
+            transition
+            above
+            pickable
+            forks
+            active
+
+        The r_nodes are listed in the order of their appearance in the
+        metro_config.xml file, which MnDOT states corresponds to their physical
+        locations witihn the corridor.
         '''
         corridor_node = self.root.findall("corridor[@route='%s'][@dir='%s']" % (corridor.route, corridor.dir))[0]
         r_nodes = []
@@ -52,7 +88,12 @@ class MNMetroConfigReader:
                                   shift = r_node.get("shift"),
                                   station_id = r_node.get("station_id"),
                                   speed_limit = r_node.get("s_limit"),
-                                  attach_side = r_node.get("attach_side")
+                                  attach_side = r_node.get("attach_side"),
+                                  transition = r_node.get("transition"),
+                                  above = r_node.get("above"),
+                                  pickable = r_node.get("pickable"),
+                                  forks = r_node.get("forks"),
+                                  active = r_node.get("active"),
                                   )
                            )
         return r_nodes
