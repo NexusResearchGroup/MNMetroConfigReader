@@ -114,10 +114,9 @@ class MNMetroConfigReader:
         r_nodes = []
 
         query = "r_node"
-        print str(attributes)
         for attribute in attributes:
             query += "[@%s='%s']" % (attribute[0], attribute[1])
-        print query
+
         for r_node in corridor_node.findall(query):
             r_nodes.append(R_Node(name = r_node.get("name"),
                                   n_type = r_node.get("n_type"),
