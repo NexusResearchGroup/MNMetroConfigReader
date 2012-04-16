@@ -93,7 +93,49 @@ class MNMetroConfigReader:
                                   above = r_node.get("above"),
                                   pickable = r_node.get("pickable"),
                                   forks = r_node.get("forks"),
-                                  active = r_node.get("active"),
+                                  active = r_node.get("active")
+                                  )
+                           )
+        return r_nodes
+
+    def find_rnodes_in_corridor(self, corridor, attributes):
+        '''
+        Returns a list of r_nodes in the specified corridor with the specified
+        attributes
+
+        corridor should be a Corridor objects identifying one of the corridors
+        in the metro_config.xml file
+
+        attributes should be a list of (attribute, value) pairs that the
+        r_nodes will be compared against. For example,
+            attributes = (("n_type", "Station"), ("speed_limit", "70"))
+        will return a list of all Station nodes where the speed limit is 70.
+        Inequalities are not supported.
+        '''
+        corridor_node = self.root.findall("corridor[@route='%s'][@dir='%s']" % (corridor.route, corridor.dir))[0]
+        r_nodes = []
+
+        query = "r_node"
+        print str(attributes)
+        for attribute in attributes:
+            query += "[@%s='%s']" % (attribute[0], attribute[1])
+        print query
+        for r_node in corridor_node.findall(query):
+            r_nodes.append(R_Node(name = r_node.get("name"),
+                                  n_type = r_node.get("n_type"),
+                                  label = r_node.get("label"),
+                                  lat = r_node.get("lat"),
+                                  lon = r_node.get("lon"),
+                                  lanes = r_node.get("lanes"),
+                                  shift = r_node.get("shift"),
+                                  station_id = r_node.get("station_id"),
+                                  speed_limit = r_node.get("s_limit"),
+                                  attach_side = r_node.get("attach_side"),
+                                  transition = r_node.get("transition"),
+                                  above = r_node.get("above"),
+                                  pickable = r_node.get("pickable"),
+                                  forks = r_node.get("forks"),
+                                  active = r_node.get("active")
                                   )
                            )
         return r_nodes
@@ -104,5 +146,7 @@ if __name__ == '__main__':
     mcreader = MNMetroConfigReader(testfile)
     corridors = mcreader.list_corridors()
     rnodes = mcreader.list_rnodes_in_corridor(corridors[0])
+    stations = mcreader.find_rnodes_in_corridor(corridors[0], (("n_type", "Station"),))
     print corridors
     print rnodes
+    print stations
