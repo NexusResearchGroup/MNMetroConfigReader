@@ -3,27 +3,25 @@ from __future__ import division
 from collections import namedtuple
 import xml.etree.cElementTree as ET
 
-Corridor = namedtuple('Corridor',
-                      ["route",
-                       "dir"]
+Corridor = namedtuple('Corridor', ["route",
+                                   "dir"]
                       )
 
-R_Node = namedtuple('R_Node',
-                    ["name",
-                     "n_type",
-                     "label",
-                     "lat",
-                     "lon",
-                     "lanes",
-                     "shift",
-                     "station_id",
-                     "speed_limit",
-                     "attach_side",
-                     "transition",
-                     "above",
-                     "pickable",
-                     "active",
-                     "forks"]
+R_Node = namedtuple('R_Node', ["name",
+                               "n_type",
+                               "label",
+                               "lat",
+                               "lon",
+                               "lanes",
+                               "shift",
+                               "station_id",
+                               "speed_limit",
+                               "attach_side",
+                               "transition",
+                               "above",
+                               "pickable",
+                               "active",
+                               "forks"]
                     )
 
 class MNMetroConfigReader:
